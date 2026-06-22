@@ -9,14 +9,28 @@ client=genai.Client(
 )
 
 st.title("AI Semester Companion")
+
+subject = st.selectbox(
+    "Select Subject",
+    ["DSA", "DBMS", "OS", "CN", "Python"]
+)
+
 question=st.text_input("Ask a question")
 
 if st.button("Submit"):
+    prompt = f"""
+You are a helpful {subject} tutor.
+
+Answer as a teacher helping a college student.
+
+Question:
+{question}
+"""
     try:
         with st.spinner("Thinking..."):
             response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=question
+            contents=prompt
         )
 
         st.write(response.text)
