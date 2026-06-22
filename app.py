@@ -12,8 +12,15 @@ st.title("AI Semester Companion")
 question=st.text_input("Ask a question")
 
 if st.button("Submit"):
-    response=client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=question
-    )
-    st.write(response.text)
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=question
+        )
+
+        st.write(response.text)
+
+    except Exception:
+        st.error(
+            "Gemini is currently busy. Please wait a few seconds and try again."
+        )
