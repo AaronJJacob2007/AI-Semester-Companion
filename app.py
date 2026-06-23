@@ -12,7 +12,7 @@ client = genai.Client(
 )
 
 # Title
-st.title("📚 AI Semester Companion")
+st.title(" AI Semester Companion")
 
 # Subject Selection
 subject = st.selectbox(
@@ -26,7 +26,7 @@ question = st.text_input("Enter a question or topic")
 # -----------------------------
 # Question Answering Feature
 # -----------------------------
-if st.button("📚 Submit"):
+if st.button(" Submit"):
 
     if not question.strip():
         st.warning("Please enter a question.")
@@ -61,7 +61,7 @@ st.divider()
 # -----------------------------
 # Quiz Generator Feature
 # -----------------------------
-if st.button("📝 Generate Quiz"):
+if st.button(" Generate Quiz"):
 
     if not question.strip():
         st.warning("Please enter a topic for the quiz.")
