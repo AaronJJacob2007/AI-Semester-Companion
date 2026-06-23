@@ -94,3 +94,44 @@ At the end provide the answer key.
             st.error(
                 "Gemini is currently busy. Please try again later."
             )
+
+st.divider()
+
+if st.button("Generate Notes"):
+
+    if not question.strip():
+        st.warning("Please enter a topic for notes.")
+
+    else:
+        notes_prompt = f"""
+Create structured study notes on {question}
+for a college student studying {subject}.
+
+Include:
+
+1. Definition
+2. Key Concepts
+3. Important Points
+4. Advantages
+5. Disadvantages
+6. Applications
+7. Interview Questions
+8. Quick Revision Summary
+
+Use headings and bullet points.
+"""
+
+        try:
+            with st.spinner("Generating Notes..."):
+
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=notes_prompt
+                )
+
+            st.write(response.text)
+
+        except Exception:
+            st.error(
+                "Gemini is currently busy. Please try again later."
+            )
