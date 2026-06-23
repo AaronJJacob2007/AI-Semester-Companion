@@ -20,6 +20,11 @@ subject = st.selectbox(
     ["DSA", "DBMS", "OS", "CN", "Python"]
 )
 
+difficulty = st.selectbox(
+    "Select Difficulty",
+    ["Beginner", "Intermediate", "Advanced"]
+)
+
 # User Input
 question = st.text_input("Enter a question or topic")
 
@@ -36,6 +41,8 @@ if st.button(" Submit"):
 You are a helpful {subject} tutor.
 
 Answer as a teacher helping a college student.
+
+Explain concepts at a {difficulty} level.
 
 Question:
 {question}
@@ -68,7 +75,7 @@ if st.button(" Generate Quiz"):
 
     else:
         quiz_prompt = f"""
-Generate 5 multiple choice questions on {question}
+Generate 5{difficulty} level multiple choice questions on {question}
 for a college student studying {subject}.
 
 For each question provide:
@@ -105,7 +112,8 @@ if st.button("Generate Notes"):
     else:
         notes_prompt = f"""
 Create structured study notes on {question}
-for a college student studying {subject}.
+for a college student studying {subject}
+at a {difficulty} level.
 
 Include:
 
