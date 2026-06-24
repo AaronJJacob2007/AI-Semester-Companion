@@ -3,35 +3,42 @@ from dotenv import load_dotenv
 import os
 from google import genai
 
+st.set_page_config(
+    page_title="AI Semester Companion",
+    page_icon="🎓",
+    layout="wide"
+)
+
+
 # Load environment variables
 load_dotenv()
 
 # Gemini Client
-client = genai.Client(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+def generate_content(prompt, spinner_text):
+    try:
+        with st.spinner(spinner_text):
+            response = client.models.generate_content(
+                model="gemini-2.5-flash", contents=prompt
+            )
+        return response.text
+    except Exception:
+        return None
+
 
 # Title
-st.title(" AI Semester Companion")
+st.title("AI Semester Companion")
+st.caption("Your AI-powered study assistant for college preparation")
 
 # Subject Selection
-subject = st.selectbox(
-    "Select Subject",
-    ["DSA", "DBMS", "OS", "CN", "Python"]
-)
+subject = st.selectbox("Select Subject", ["DSA", "DBMS", "OS", "CN", "Python"])
 
-difficulty = st.selectbox(
-    "Select Difficulty",
-    ["Beginner", "Intermediate", "Advanced"]
-)
+difficulty = st.selectbox("Select Difficulty", ["Beginner", "Intermediate", "Advanced"])
 
 
-days_left = st.number_input(
-    "Days Until Exam",
-    min_value=1,
-    max_value=365,
-    value=30
-)
+days_left = st.number_input("Days Until Exam", min_value=1, max_value=365, value=30)
 
 # User Input
 question = st.text_input("Enter a question or topic")
@@ -39,7 +46,7 @@ question = st.text_input("Enter a question or topic")
 # -----------------------------
 # Question Answering Feature
 # -----------------------------
-if st.button(" Submit"):
+if st.button("Submit"):
 
     if not question.strip():
         st.warning("Please enter a question.")
@@ -56,16 +63,11 @@ Question:
 {question}
 """
 
-        try:
-            with st.spinner("Thinking..."):
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=prompt
-                )
+        answer = generate_content(prompt, "Thinking...")
 
-            st.write(response.text)
-
-        except Exception:
+        if answer:
+            st.write(answer)
+        else:
             st.error(
                 "Gemini is currently busy. Please wait a few seconds and try again."
             )
@@ -76,7 +78,7 @@ st.divider()
 # -----------------------------
 # Quiz Generator Feature
 # -----------------------------
-if st.button(" Generate Quiz"):
+if st.button("Generate Quiz"):
 
     if not question.strip():
         st.warning("Please enter a topic for the quiz.")
@@ -96,19 +98,13 @@ D)
 At the end provide the answer key.
 """
 
-        try:
-            with st.spinner("Generating Quiz..."):
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=quiz_prompt
-                )
+        answer = generate_content(quiz_prompt, "Generating Quiz...")
 
-            st.write(response.text)
+        if answer:
+            st.write(answer)
 
-        except Exception:
-            st.error(
-                "Gemini is currently busy. Please try again later."
-            )
+        else:
+            st.error("Gemini is currently busy. Please try again later.")
 
 st.divider()
 
@@ -137,27 +133,17 @@ Include:
 Use headings and bullet points.
 """
 
-        try:
-            with st.spinner("Generating Notes..."):
+        answer = generate_content(notes_prompt, "Generating Notes...")
 
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=notes_prompt
-                )
+        if answer:
+            st.write(answer)
 
-            st.write(response.text)
-
-        except Exception:
-            st.error(
-                "Gemini is currently busy. Please try again later."
-            )
+        else:
+            st.error("Gemini is currently busy. Please try again later.")
 
 st.divider()
 
-plan_type = st.selectbox(
-    "Study Plan Type",
-    ["Topic", "Entire Subject"]
-)
+plan_type = st.selectbox("Study Plan Type", ["Topic", "Entire Subject"])
 
 if st.button("Generate Study Plan"):
 
@@ -189,20 +175,13 @@ The plan should:
 Present the plan day-by-day.
 """
 
-            try:
-                with st.spinner("Creating Study Plan..."):
+            answer = generate_content(study_prompt, "Creating Study Plan...")
 
-                    response = client.models.generate_content(
-                        model="gemini-2.5-flash",
-                        contents=study_prompt
-                    )
+            if answer:
+                st.write(answer)
 
-                st.write(response.text)
-
-            except Exception:
-                st.error(
-                    "Gemini is currently busy. Please try again later."
-                )
+            else:
+                st.error("Gemini is currently busy. Please try again later.")
 
     else:
 
@@ -224,17 +203,10 @@ The plan should:
 Present the plan day-by-day.
 """
 
-        try:
-            with st.spinner("Creating Study Plan..."):
+        answer = generate_content(study_prompt, "Creating Study Plan...")
 
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=study_prompt
-                )
+        if answer:
+            st.write(answer)
 
-            st.write(response.text)
-
-        except Exception:
-            st.error(
-                "Gemini is currently busy. Please try again later."
-            )
+        else:
+            st.error("Gemini is currently busy. Please try again later.")
