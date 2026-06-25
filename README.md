@@ -30,7 +30,8 @@ The project was created to learn AI application development, API integration, an
 * Customizable based on the number of days until the exam
 
 ### User Experience Features
-
+* Response History
+* Session State Management
 * Subject selection
 * Difficulty selection
 * Input validation
