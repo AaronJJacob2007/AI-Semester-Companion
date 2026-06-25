@@ -27,6 +27,9 @@ def generate_content(prompt, spinner_text):
 if "history" not in st.session_state:
     st.session_state.history = []
 
+if "generated_notes" not in st.session_state:
+    st.session_state.generated_notes = ""
+
 # Title
 st.title("AI Semester Companion")
 st.caption("Your AI-powered study assistant for college preparation")
@@ -34,6 +37,9 @@ st.caption("Your AI-powered study assistant for college preparation")
 st.sidebar.title("History")
 if st.sidebar.button("Clear History"):
     st.session_state.history.clear()
+
+st.sidebar.write(f"Items: {len(st.session_state.history)}")
+
 
 for item in st.session_state.history:
     st.sidebar.write(item)
@@ -146,9 +152,19 @@ Use headings and bullet points.
         if answer:
             st.write(answer)
             st.session_state.history.append(f"Notes: {question}")
+            st.session_state.generated_notes=answer
 
         else:
             st.error("Gemini is currently busy. Please try again later.")
+
+if st.session_state.generated_notes:
+
+    st.download_button(
+        label="Download Notes (.txt)",
+        data=st.session_state.generated_notes,
+        file_name="study_notes.txt",
+        mime="text/plain"
+    )
 
 st.divider()
 
