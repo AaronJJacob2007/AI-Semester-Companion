@@ -2,7 +2,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 from google import genai
-from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
 st.set_page_config(page_title="AI Semester Companion", page_icon="🎓", layout="wide")
@@ -24,7 +24,8 @@ def generate_content(prompt, spinner_text):
         return response.text
     except Exception:
         return None
-    
+
+
 def create_pdf(notes_text):
 
     pdf_file = "study_notes.pdf"
@@ -35,12 +36,61 @@ def create_pdf(notes_text):
 
     content = []
 
-    for line in notes_text.split("\n"):
+    # Title
+    content.append(Paragraph("<b>AI Semester Companion</b>", styles["Title"]))
 
-        if line.strip():
-            content.append(
-                Paragraph(line, styles["BodyText"])
-            )
+    # Space
+    content.append(Spacer(1, 12))
+
+    # Subject
+    content.append(Paragraph(f"<b>Subject:</b> {subject}", styles["Normal"]))
+
+    # Difficulty
+    content.append(Paragraph(f"<b>Difficulty:</b> {difficulty}", styles["Normal"]))
+
+    content.append(Spacer(1, 20))
+
+    for line in notes_text.split("\n"):
+        line = line.strip()
+        line = line.replace("**", "")
+        line = line.replace("`", "")
+        if line == "---":
+         continue
+
+        if not line:
+            continue
+        # Main Heading
+        if line.startswith("#"):
+
+          heading = line.lstrip("#").strip()
+
+          content.append(
+          Paragraph(
+            f"<b>{heading}</b>",
+            styles["Heading1"]
+          )
+        )
+
+          content.append(Spacer(1, 8))
+        
+        # Bullet Points
+        elif line.startswith("* "):
+            bullet = line.replace("* ", "", 1)
+            bullet = bullet.replace("*", "")
+
+            content.append(Paragraph(f"• {line.replace('* ', '')}", styles["BodyText"]))
+            content.append(Spacer(1,3))
+        # Numbered Lists
+        elif line[:2].isdigit() or (
+            len(line) > 2 and line[0].isdigit() and line[1] == "."
+        ):
+            content.append(Paragraph(line, styles["BodyText"]))
+            content.append(Spacer(1, 4))
+
+        # Normal Text
+        else:
+            content.append(Paragraph(line, styles["BodyText"]))
+            content.append(Spacer(1, 4))
 
     doc.build(content)
 
@@ -175,7 +225,7 @@ Use headings and bullet points.
         if answer:
             st.write(answer)
             st.session_state.history.append(f"Notes: {question}")
-            st.session_state.generated_notes=answer
+            st.session_state.generated_notes = answer
 
         else:
             st.error("Gemini is currently busy. Please try again later.")
@@ -186,14 +236,12 @@ if st.session_state.generated_notes:
         label="Download Notes (.txt)",
         data=st.session_state.generated_notes,
         file_name="study_notes.txt",
-        mime="text/plain"
+        mime="text/plain",
     )
 
 if st.session_state.generated_notes:
 
-    pdf_file = create_pdf(
-        st.session_state.generated_notes
-    )
+    pdf_file = create_pdf(st.session_state.generated_notes)
 
     with open(pdf_file, "rb") as pdf:
 
@@ -201,7 +249,7 @@ if st.session_state.generated_notes:
             label="Download Notes (.pdf)",
             data=pdf,
             file_name="study_notes.pdf",
-            mime="application/pdf"
+            mime="application/pdf",
         )
 
 st.divider()
