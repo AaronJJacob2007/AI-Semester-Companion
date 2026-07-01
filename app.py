@@ -132,7 +132,6 @@ subject = st.selectbox("Select Subject", ["DSA", "DBMS", "OS", "CN", "Python"])
 difficulty = st.selectbox("Select Difficulty", ["Beginner", "Intermediate", "Advanced"])
 
 
-days_left = st.number_input("Days Until Exam", min_value=1, max_value=365, value=30)
 
 # User Input
 question = st.text_input("Enter a question or topic")
@@ -168,7 +167,7 @@ Question:
             )
 if st.session_state.generated_answer:
 
-    with st.expander("📖 Answer", expanded=True):
+    with st.expander(" Answer", expanded=True):
         st.write(st.session_state.generated_answer)
 
 # Divider
@@ -208,7 +207,7 @@ At the end provide the answer key.
 
 if st.session_state.generated_quiz:
 
-    with st.expander("📝 Quiz", expanded=False):
+    with st.expander(" Quiz", expanded=False):
         st.write(st.session_state.generated_quiz)
 
 st.divider()
@@ -251,7 +250,7 @@ Use headings and bullet points.
 
 
 if st.session_state.generated_notes:
-    with st.expander("📚Notes",expanded=False):
+    with st.expander("Notes",expanded=False):
         st.write(st.session_state.generated_notes)
 
         st.download_button(
@@ -274,6 +273,8 @@ if st.session_state.generated_notes:
 st.divider()
 
 plan_type = st.selectbox("Study Plan Type", ["Topic", "Entire Subject"])
+days_left = st.number_input("Days Until Exam", min_value=1, max_value=365, value=30)
+
 
 if st.button("Generate Study Plan"):
 
@@ -345,5 +346,5 @@ Present the plan day-by-day.
 
 if st.session_state.generated_plan:
 
-    with st.expander("📅 Study Plan", expanded=False):
+    with st.expander(" Study Plan", expanded=False):
         st.write(st.session_state.generated_plan)
